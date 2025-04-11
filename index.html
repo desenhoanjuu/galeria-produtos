@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,127 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeria de Produtos</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .busca {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .busca input {
-      padding: 0.5rem;
-      width: 250px;
-      font-size: 1rem;
-    }
-    .galeria {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-    }
-    .produto {
-      background: white;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .produto img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
-    .produto .nome {
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    .produto .codigo {
-      color: #888;
-      font-size: 0.9rem;
-    }
-    .lista-codigos {
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #555;
-      text-align: center;
-    }
+    body { font-family: sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+    h1 { text-align: center; margin-bottom: 1rem; }
+    .busca { text-align: center; margin-bottom: 2rem; }
+    .busca input { padding: 0.5rem; width: 250px; font-size: 1rem; }
+    .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .produto { background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; }
+    .produto img { max-width: 100%; height: auto; border-radius: 8px; }
+    .produto .nome { margin-top: 1rem; font-weight: bold; }
+    .produto .codigo { color: #888; font-size: 0.9rem; }
+    .lista-codigos { margin-top: 3rem; font-size: 0.9rem; color: #555; text-align: center; }
   </style>
 </head>
 <body>
   <h1>Galeria de Produtos</h1>
-
   <div class="busca">
     <input type="text" id="campoBusca" placeholder="Buscar por código ou nome..." onkeyup="buscarProduto()">
   </div>
-
-  <div class="galeria" id="galeria"></div>
-
+  <div class="galeria" id="galeria">
+    <div class="produto" data-nome="" data-codigo="210416">
+      <img src="produtos/210416.jpg" alt="">
+      <div class="nome"></div>
+      <div class="codigo">210416</div>
+    </div>
+    <div class="produto" data-nome="" data-codigo="210417">
+      <img src="produtos/210417.jpg" alt="">
+      <div class="nome"></div>
+      <div class="codigo">210417</div>
+    </div>
+  </div>
   <div class="lista-codigos">
     <h2>Códigos cadastrados</h2>
     <div id="listaCodigos"></div>
   </div>
-
   <script>
-    const imagens = [
-      "vestido_411168.jpg",
-      "vestido_viscolinho_410999.jpg",
-      "vestido_viscose_slub_411116.jpg",
-      "vestido_viscose_410178.jpg",
-      "vestido_vermelho.jpg",
-      "vestido_branco.jpg",
-      "vestido_rosa.jpg",
-      "vestido_estampado.jpg"
-    ];
+    const produtos = document.querySelectorAll('.produto');
+    const codigos = new Set();
+    produtos.forEach(p => codigos.add(p.dataset.codigo));
+    document.getElementById('listaCodigos').innerText = Array.from(codigos).sort().join(', ');
 
-    const galeria = document.getElementById('galeria');
-    const listaCodigos = document.getElementById('listaCodigos');
-    const codigosSet = new Set();
-
-    imagens.forEach(nomeArquivo => {
-      const partes = nomeArquivo.replace('.jpg', '').split('_');
-      const nomeProduto = partes.slice(0, partes.length - 1).join(' ').replace(/\w/g, l => l.toUpperCase());
-      const codigo = partes[partes.length - 1];
-
-      // Verifica duplicatas
-      if (codigosSet.has(codigo)) {
-        console.warn(`Produto duplicado encontrado: ${codigo}`);
-      }
-      codigosSet.add(codigo);
-
-      const item = document.createElement('div');
-      item.className = 'produto';
-      item.dataset.codigo = codigo;
-      item.dataset.nome = nomeProduto.toLowerCase();
-      item.innerHTML = `
-        <img src="produtos/${nomeArquivo}" alt="${nomeProduto}">
-        <div class="nome">${nomeProduto}</div>
-        <div class="codigo">${codigo}</div>
-      `;
-      galeria.appendChild(item);
-    });
-
-    // Exibe lista de códigos
-    listaCodigos.innerText = Array.from(codigosSet).sort().join(', ');
-
-    // Função de busca
     function buscarProduto() {
       const termo = document.getElementById('campoBusca').value.toLowerCase();
-      const produtos = document.querySelectorAll('.produto');
-
       produtos.forEach(p => {
         const nome = p.dataset.nome;
         const codigo = p.dataset.codigo;
-        if (nome.includes(termo) || codigo.includes(termo)) {
-          p.style.display = 'block';
-        } else {
-          p.style.display = 'none';
-        }
+        p.style.display = nome.includes(termo) || codigo.includes(termo) ? 'block' : 'none';
       });
     }
   </script>
